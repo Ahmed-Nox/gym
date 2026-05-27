@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GYMOS — تسجيل الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #161616;
+    --border: #2a2a2a;
+    --accent: #E8FF00;
+    --accent2: #FF4D00;
+    --white: #f5f5f5;
+    --muted: #888;
+    --danger: #ff4d4d;
+    --radius: 4px;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Tajawal', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; opacity: 0.03;
+    background-image:
+      linear-gradient(#fff 1px, transparent 1px),
+      linear-gradient(90deg, #fff 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .bg-glow {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 500px 500px at 20% 50%, rgba(232,255,0,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 80% 20%, rgba(255,77,0,0.04) 0%, transparent 70%);
+  }
+
+  .login-wrap {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 900px;
+    min-height: 560px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* LEFT BRAND PANEL */
+  .brand-panel {
+    background: linear-gradient(160deg, #141414 0%, #0d0d0d 100%);
+    border-left: 1px solid var(--border);
+    padding: 52px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-panel::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,255,0,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .brand-logo {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: var(--accent);
+    letter-spacing: 6px;
+    line-height: 1;
+  }
+  .brand-logo span { color: var(--white); }
+  .brand-tagline {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .brand-big {
+    font-family: var(--font-display);
+    font-size: 96px;
+    color: rgba(232,255,0,0.06);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    position: absolute;
+    bottom: 40px;
+    right: 32px;
+  }
+  .role-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .role-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .role-icon {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .role-icon.owner { background: rgba(232,255,0,0.12); }
+  .role-icon.sales { background: rgba(255,77,0,0.12); }
+  .role-name { font-size: 14px; font-weight: 700; color: var(--white); }
+  .role-desc { font-size: 12px; color: var(--muted); }
+
+  /* RIGHT FORM PANEL */
+  .form-panel {
+    background: var(--dark);
+    padding: 52px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .form-heading {
+    font-family: var(--font-display);
+    font-size: 40px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .form-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+  .field {
+    margin-bottom: 16px;
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 13px 16px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field input.error { border-color: var(--danger); }
+
+  .error-msg {
+    display: none;
+    background: rgba(255,77,77,0.08);
+    border: 1px solid rgba(255,77,77,0.25);
+    color: var(--danger);
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .error-msg.show { display: block; }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    padding: 14px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: transform 0.15s, opacity 0.15s;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .submit-btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: var(--black);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .login-wrap {
+      grid-template-columns: 1fr;
+      width: 90%;
+      max-width: 420px;
+    }
+    .brand-panel { display: none; }
+    .form-panel { padding: 40px 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="login-wrap">
+  <!-- BRAND PANEL -->
+  <div class="brand-panel">
+    <div>
+      <div class="brand-logo">GYM<span>OS</span></div>
+      <div class="brand-tagline">نظام الإدارة</div>
+    </div>
+    <div class="role-badges">
+      <div class="role-badge">
+        <div class="role-icon owner">👑</div>
+        <div>
+          <div class="role-name">Owner</div>
+          <div class="role-desc">CMS · Analytics · Leads كاملة</div>
+        </div>
+      </div>
+      <div class="role-badge">
+        <div class="role-icon sales">📋</div>
+        <div>
+          <div class="role-name">Sales Staff</div>
+          <div class="role-desc">متابعة Leads · Status · Notes</div>
+        </div>
+      </div>
+    </div>
+    <div class="brand-big">GYM<br>OS</div>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <h1 class="form-heading">ادخل<br>دلوقتي</h1>
+    <p class="form-sub">سيتم تحديد الصلاحيات تلقائياً حسب حسابك</p>
+
+    <div class="error-msg" id="errorMsg">بيانات غلط، حاول تاني</div>
+
+    <div class="field">
+      <label>الإيميل</label>
+      <input type="email" id="emailInput" placeholder="owner@gymos.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>كلمة المرور</label>
+      <input type="password" id="passInput" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <button class="submit-btn" id="loginBtn" onclick="handleLogin()">
+      <div class="spinner" id="spinner"></div>
+      <span id="btnText">تسجيل الدخول ←</span>
+    </button>
+
+    <a href="index.html" class="back-link">← العودة للموقع</a>
+  </div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // ─── Firebase Config ───
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCyNMw7ZnwkJH8l7jB8EnALG8dfn1WBGuE",
+    authDomain:        "gymos-preversion.firebaseapp.com",
+    projectId:         "gymos-preversion",
+    storageBucket:     "gymos-preversion.firebasestorage.app",
+    messagingSenderId: "564373342202",
+    appId:             "1:564373342202:web:dcbb2747d8d9ebc44b8643",
+    measurementId:     "G-8425NY8EBC"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // لو المستخدم مسجل دخوله خلاص → روّحه للـ dashboard
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const role = await getUserRole(db, user.uid);
+      window.location.href = `dashboard.html?role=${role}`;
+    }
+  });
+
+  async function getUserRole(db, uid) {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) return snap.data().role || "sales";
+    return "sales";
+  }
+
+  window.handleLogin = async function() {
+    const email = document.getElementById('emailInput').value.trim();
+    const pass  = document.getElementById('passInput').value;
+    const btn   = document.getElementById('loginBtn');
+    const spin  = document.getElementById('spinner');
+    const txt   = document.getElementById('btnText');
+    const err   = document.getElementById('errorMsg');
+
+    if (!email || !pass) {
+      err.textContent = 'من فضلك أدخل الإيميل وكلمة المرور';
+      err.classList.add('show');
+      return;
+    }
+
+    btn.disabled = true;
+    spin.style.display = 'block';
+    txt.textContent = 'جاري الدخول...';
+    err.classList.remove('show');
+
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, pass);
+      const role = await getUserRole(db, cred.user.uid);
+      window.location.href = `dashboard.html?role=${role}`;
+    } catch (e) {
+      err.textContent = 'الإيميل أو كلمة المرور غلط';
+      err.classList.add('show');
+      document.getElementById('emailInput').classList.add('error');
+      document.getElementById('passInput').classList.add('error');
+    } finally {
+      btn.disabled = false;
+      spin.style.display = 'none';
+      txt.textContent = 'تسجيل الدخول ←';
+    }
+  };
+
+  // Enter key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.handleLogin();
+  });
+</script>
+</body>
+</html>

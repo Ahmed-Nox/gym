@@ -1,0 +1,94 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── HELPER FUNCTIONS ───────────────────────────────────────
+
+    // المستخدم مسجل دخوله؟
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // جيب الـ role من Firestore
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isOwner() {
+      return isAuth() && getRole() == 'owner';
+    }
+
+    function isSales() {
+      return isAuth() && (getRole() == 'sales' || getRole() == 'owner');
+    }
+
+    // ─── USERS COLLECTION ───────────────────────────────────────
+    // كل logged-in user يقدر يقرأ profile بتاعه بس
+    // Owner بس يقدر يعدل roles
+    match /users/{userId} {
+      allow read: if isAuth() && request.auth.uid == userId;
+      allow write: if isOwner();
+    }
+
+    // ─── LEADS COLLECTION ───────────────────────────────────────
+    // الزوار يقدروا يضيفوا leads (بدون login)
+    // Sales + Owner يقدروا يقروا ويعدلوا
+    // Owner بس يقدر يحذف
+    match /leads/{leadId} {
+      // زائر بدون login يضيف lead من الفورم
+      allow create: if
+        // الحقول المطلوبة موجودة
+        request.resource.data.keys().hasAll(['name', 'phone', 'source', 'status', 'created_at'])
+        // الـ status لازم يبدأ بـ new
+        && request.resource.data.status == 'new'
+        // منع spam - الحقول مش أكبر من الحد
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() <= 20;
+
+      // Sales و Owner يشوفوا الـ leads
+      allow read: if isSales();
+
+      // Sales و Owner يعدلوا (status + notes)
+      // Sales مش يقدر يعدل name أو phone
+      allow update: if isSales() &&
+        (
+          isOwner()
+          ||
+          // Sales يقدر يعدل status و notes بس
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status', 'notes', 'updated_at'])
+        );
+
+      // Owner بس يحذف
+      allow delete: if isOwner();
+    }
+
+    // ─── GYM CONTENT (CMS) ──────────────────────────────────────
+    // أي حد يقدر يقرأ (الموقع العام يجيب البيانات)
+    // Owner بس يعدل
+    match /gym_content/{docId} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    // ─── ANALYTICS EVENTS ───────────────────────────────────────
+    // أي حد يكتب (tracking بدون login)
+    // Owner بس يقرأ
+    match /analytics/{eventId} {
+      allow create: if
+        request.resource.data.keys().hasAll(['type', 'timestamp'])
+        && request.resource.data.type is string
+        && request.resource.data.type.size() <= 50;
+      allow read: if isOwner();
+      allow update, delete: if false;
+    }
+
+    // ─── BLOCK EVERYTHING ELSE ──────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
