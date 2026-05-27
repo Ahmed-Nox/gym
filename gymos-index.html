@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GYMOS — اشحن نفسك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #161616;
+    --border: #2a2a2a;
+    --accent: #E8FF00;
+    --accent2: #FF4D00;
+    --white: #f5f5f5;
+    --muted: #888;
+    --radius: 4px;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Tajawal', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-decoration: none;
+  }
+  .logo span { color: var(--white); }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--black);
+    padding: 10px 24px;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); background: #d4eb00; }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 600px 600px at 70% 50%, rgba(232,255,0,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 20% 80%, rgba(255,77,0,0.05) 0%, transparent 70%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.04;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(232,255,0,0.1);
+    border: 1px solid rgba(232,255,0,0.25);
+    color: var(--accent);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(72px, 10vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+  .hero-title .accent { color: var(--accent); }
+  .hero-title .accent2 { color: var(--accent2); }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--black);
+    padding: 14px 32px;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: transform 0.15s;
+    border: none; cursor: pointer;
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    padding: 14px 32px;
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 16px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--muted); color: var(--accent); }
+  .hero-stats {
+    display: flex; gap: 48px;
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ─── SECTIONS SHARED ─── */
+  section { padding: 96px 48px; }
+  .section-label {
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 480px;
+    margin-bottom: 56px;
+    line-height: 1.7;
+  }
+
+  /* ─── FEATURES ─── */
+  #features { background: var(--dark); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .feature-card {
+    background: var(--dark);
+    padding: 36px 32px;
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: var(--card); }
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: rgba(232,255,0,0.08);
+    border: 1px solid rgba(232,255,0,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .feature-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+  .feature-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ─── PRICING ─── */
+  #pricing { background: var(--black); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+  }
+  .pricing-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 36px 32px;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .pricing-card:hover { transform: translateY(-4px); }
+  .pricing-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(160deg, rgba(232,255,0,0.06) 0%, var(--card) 60%);
+  }
+  .featured-badge {
+    position: absolute; top: -13px; right: 24px;
+    background: var(--accent);
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .plan-name {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .plan-price {
+    font-family: var(--font-display);
+    font-size: 56px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .plan-price span { font-size: 20px; color: var(--muted); }
+  .plan-period {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .plan-features {
+    list-style: none;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .plan-features li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; color: #aaa;
+  }
+  .check { color: var(--accent); font-size: 16px; }
+  .plan-cta {
+    display: block;
+    text-align: center;
+    padding: 13px 24px;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s;
+    border: none;
+  }
+  .cta-dark {
+    background: var(--border);
+    color: var(--white);
+  }
+  .cta-accent {
+    background: var(--accent);
+    color: var(--black);
+  }
+  .plan-cta:hover { transform: translateY(-1px); }
+
+  /* ─── ABOUT ─── */
+  #about { background: var(--dark); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+    overflow: hidden;
+    position: relative;
+  }
+  .about-img-box::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(232,255,0,0.05) 0%, transparent 60%);
+  }
+  .about-accent-box {
+    position: absolute;
+    bottom: -24px; left: -24px;
+    background: var(--accent);
+    color: var(--black);
+    padding: 16px 24px;
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 1px;
+  }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .about-values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 36px;
+  }
+  .value-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+  }
+  .value-icon { font-size: 24px; margin-bottom: 8px; }
+  .value-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .value-desc { font-size: 12px; color: var(--muted); }
+
+  /* ─── GALLERY ─── */
+  #gallery { background: var(--black); }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 200px);
+    gap: 12px;
+  }
+  .gallery-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .gallery-item:hover { border-color: var(--accent); }
+  .gallery-item.large {
+    grid-column: span 2;
+    grid-row: span 2;
+    font-size: 72px;
+  }
+  .gallery-overlay {
+    position: absolute; inset: 0;
+    background: rgba(232,255,0,0.04);
+    display: flex; align-items: flex-end;
+    padding: 16px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+  .gallery-label {
+    font-size: 12px; font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase; letter-spacing: 1px;
+    border: 1px solid var(--accent);
+    padding: 4px 10px; border-radius: 4px;
+  }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--dark); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 20px; }
+  .contact-item {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .contact-item:hover { border-color: var(--accent); }
+  .contact-icon {
+    width: 44px; height: 44px;
+    background: rgba(232,255,0,0.08);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .contact-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .contact-value { font-weight: 600; color: var(--white); font-size: 15px; }
+  .map-placeholder {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    height: 320px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .map-placeholder .map-icon { font-size: 48px; }
+
+  /* ─── LEAD FORM ─── */
+  .lead-form-section {
+    background: linear-gradient(135deg, rgba(232,255,0,0.06) 0%, var(--dark) 50%);
+    border-top: 1px solid rgba(232,255,0,0.15);
+    padding: 80px 48px;
+  }
+  .lead-form-wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .lead-form {
+    display: flex; flex-direction: column; gap: 14px;
+    margin-top: 36px;
+  }
+  .form-input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+    width: 100%;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: right;
+  }
+  .form-submit {
+    background: var(--accent);
+    color: var(--black);
+    padding: 15px;
+    border-radius: var(--radius);
+    border: none;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .form-submit:hover { transform: translateY(-2px); }
+  .form-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .success-msg {
+    display: none;
+    background: rgba(232,255,0,0.1);
+    border: 1px solid rgba(232,255,0,0.3);
+    color: var(--accent);
+    padding: 16px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* ─── WHATSAPP FLOAT ─── */
+  .wa-float {
+    position: fixed; bottom: 28px; left: 28px; z-index: 999;
+    width: 56px; height: 56px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: bounce-in 0.6s 1s both;
+  }
+  .wa-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+  }
+  @keyframes bounce-in {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .wa-tooltip {
+    position: absolute; left: 68px; bottom: 8px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .wa-float:hover .wa-tooltip { opacity: 1; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 26px;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+  .footer-logo span { color: var(--muted); }
+  .footer-copy { font-size: 13px; color: var(--muted); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-size: 13px; color: var(--muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 64px 24px; }
+    #hero { padding: 100px 24px 64px; }
+    .hero-stats { flex-wrap: wrap; gap: 32px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 36px; }
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+    }
+    .gallery-item.large { grid-column: span 2; grid-row: span 1; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .lead-form-section { padding: 64px 24px; }
+  }
+  @media (max-width: 600px) {
+    .hero-title { font-size: 58px; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-item.large { grid-column: span 1; }
+    .about-values { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#hero" class="logo">GYM<span>OS</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">المميزات</a></li>
+    <li><a href="#pricing">الأسعار</a></li>
+    <li><a href="#about">عننا</a></li>
+    <li><a href="#gallery">معرض</a></li>
+    <li><a href="#contact">تواصل</a></li>
+  </ul>
+  <a href="#lead-form" class="nav-cta">سجّل الآن</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      <span>القاهرة · مفتوح الآن</span>
+    </div>
+    <h1 class="hero-title">
+      اشحن<br>
+      <span class="accent">نفسك</span><br>
+      <span class="accent2">كل</span> يوم
+    </h1>
+    <p class="hero-sub">أحدث معدات اللياقة، مدربون معتمدون، وبيئة تدفعك للأفضل. GYMOS مش مجرد جيم — ده أسلوب حياة.</p>
+    <div class="hero-actions">
+      <a href="#lead-form" class="btn-primary">احجز تجربة مجانية</a>
+      <a href="#pricing" class="btn-outline">شوف الأسعار</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">500+</div>
+        <div class="stat-label">عضو نشط</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label">مدرب معتمد</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">سنوات خبرة</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">ليه GYMOS؟</div>
+  <h2 class="section-title">كل اللي محتاجه<br>في مكان واحد</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🏋️</div>
+      <div class="feature-title">أحدث المعدات</div>
+      <div class="feature-desc">أجهزة أوروبية وأمريكية حديثة لكل التمارين، متجددة باستمرار.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">برامج مخصصة</div>
+      <div class="feature-desc">خطة تدريبية مصممة لهدفك سواء كان تخسيس، بناء عضل، أو لياقة عامة.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">مدربون محترفون</div>
+      <div class="feature-desc">كل مدربينا حاصلين على شهادات دولية معتمدة ولديهم خبرة عملية.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🕐</div>
+      <div class="feature-title">فتح 16 ساعة</div>
+      <div class="feature-desc">من 6 الصبح لـ 10 الليل كل أيام الأسبوع. تعب في أي وقت يناسبك.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚿</div>
+      <div class="feature-title">مرافق VIP</div>
+      <div class="feature-desc">غرف تغيير نظيفة، صالة استراحة، ومنطقة خاصة للعضوية المميزة.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💊</div>
+      <div class="feature-title">ركن التغذية</div>
+      <div class="feature-desc">منتجات تغذية رياضية وبروتين بأسعار مناسبة داخل الجيم مباشرة.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-label">الاشتراكات</div>
+  <h2 class="section-title">اختار الباقة<br>المناسبة ليك</h2>
+  <p class="section-sub">أسعار مرنة تناسب كل الميزانيات. لا رسوم خفية، لا إلزام طويل.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="plan-name">Basic</div>
+      <div class="plan-price">299<span>ج</span></div>
+      <div class="plan-period">شهرياً</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> دخول غير محدود</li>
+        <li><span class="check">✓</span> كل الأجهزة الأساسية</li>
+        <li><span class="check">✓</span> غرف تغيير</li>
+        <li style="color:#555;">✗ جلسات تدريب شخصي</li>
+        <li style="color:#555;">✗ صالة VIP</li>
+      </ul>
+      <a href="#lead-form" class="plan-cta cta-dark">ابدأ الآن</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="featured-badge">الأكثر طلباً</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">499<span>ج</span></div>
+      <div class="plan-period">شهرياً</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> كل مميزات Basic</li>
+        <li><span class="check">✓</span> 4 جلسات تدريب شخصي</li>
+        <li><span class="check">✓</span> تقييم لياقة شهري</li>
+        <li><span class="check">✓</span> خطة تغذية</li>
+        <li style="color:#555;">✗ صالة VIP</li>
+      </ul>
+      <a href="#lead-form" class="plan-cta cta-accent">ابدأ الآن</a>
+    </div>
+    <div class="pricing-card">
+      <div class="plan-name">VIP</div>
+      <div class="plan-price">799<span>ج</span></div>
+      <div class="plan-period">شهرياً</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> كل مميزات Pro</li>
+        <li><span class="check">✓</span> دخول صالة VIP</li>
+        <li><span class="check">✓</span> 8 جلسات تدريب شخصي</li>
+        <li><span class="check">✓</span> ضيف مجاني معاك</li>
+        <li><span class="check">✓</span> أولوية في الحجز</li>
+      </ul>
+      <a href="#lead-form" class="plan-cta cta-dark">ابدأ الآن</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual">
+      <div class="about-img-box">🏋️</div>
+      <div class="about-accent-box">منذ 2021</div>
+    </div>
+    <div class="about-text">
+      <div class="section-label">من إحنا</div>
+      <h2 class="section-title">أكثر من<br>مجرد جيم</h2>
+      <p>GYMOS انطلق برؤية واضحة: إننا نقدم تجربة لياقة استثنائية لكل شخص بصرف النظر عن مستواه أو هدفه.</p>
+      <p>من أول يوم، حرصنا إن الجيم يكون مكان يحسسك بالراحة والإنجاز في نفس الوقت. مش بس أجهزة ومعدات — ده مجتمع بيدعم بعضه.</p>
+      <div class="about-values">
+        <div class="value-item">
+          <div class="value-icon">🔥</div>
+          <div class="value-title">شغف حقيقي</div>
+          <div class="value-desc">بنؤمن باللياقة كأسلوب حياة</div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🏆</div>
+          <div class="value-title">نتايج مضمونة</div>
+          <div class="value-desc">خطط مجربة وبرامج فعّالة</div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🤝</div>
+          <div class="value-title">مجتمع داعم</div>
+          <div class="value-desc">أعضاء ومدربين بيشجعوا بعض</div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">💡</div>
+          <div class="value-title">تطوير مستمر</div>
+          <div class="value-desc">أحدث أساليب وأبحاث التدريب</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-label">معرض الصور</div>
+  <h2 class="section-title" style="margin-bottom: 40px;">شوف<br>المكان</h2>
+  <div class="gallery-grid">
+    <div class="gallery-item large">
+      🏋️
+      <div class="gallery-overlay"><span class="gallery-label">قاعة الأثقال</span></div>
+    </div>
+    <div class="gallery-item">
+      🧘
+      <div class="gallery-overlay"><span class="gallery-label">يوغا</span></div>
+    </div>
+    <div class="gallery-item">
+      🥊
+      <div class="gallery-overlay"><span class="gallery-label">ملاكمة</span></div>
+    </div>
+    <div class="gallery-item">
+      🚴
+      <div class="gallery-overlay"><span class="gallery-label">سايكل</span></div>
+    </div>
+    <div class="gallery-item">
+      🏊
+      <div class="gallery-overlay"><span class="gallery-label">كارديو</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">تواصل معنا</div>
+  <h2 class="section-title" style="margin-bottom: 16px;">إحنا هنا<br>ليك دايماً</h2>
+  <p class="section-sub">تواصل معنا على واتساب أو زور الجيم مباشرة.</p>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <a href="https://wa.me/201000000000" class="contact-item" target="_blank">
+        <div class="contact-icon">💬</div>
+        <div>
+          <div class="contact-label">واتساب</div>
+          <div class="contact-value">01000000000+</div>
+        </div>
+      </a>
+      <a href="tel:+201000000000" class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-label">هاتف</div>
+          <div class="contact-value">01000000000+</div>
+        </div>
+      </a>
+      <div class="contact-item" style="cursor:default;">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-label">العنوان</div>
+          <div class="contact-value">القاهرة، مصر الجديدة</div>
+        </div>
+      </div>
+      <div class="contact-item" style="cursor:default;">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-label">مواعيد العمل</div>
+          <div class="contact-value">6 صباحاً – 10 مساءً يومياً</div>
+        </div>
+      </div>
+    </div>
+    <div class="map-placeholder">
+      <div class="map-icon">🗺️</div>
+      <div>Google Maps سيتم تضمينه هنا</div>
+      <a href="https://maps.google.com" target="_blank" style="color: var(--accent); font-size: 13px; font-weight: 600;">افتح الموقع ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- LEAD FORM -->
+<div class="lead-form-section" id="lead-form">
+  <div class="lead-form-wrap">
+    <div class="section-label" style="text-align:center;">تجربة مجانية</div>
+    <h2 class="section-title" style="text-align:center; font-size: 48px;">احجز دلوقتي</h2>
+    <p style="color: var(--muted); font-size: 15px; margin-top: 8px;">سجّل بياناتك وفريقنا هيتواصل معاك خلال 24 ساعة</p>
+    <form class="lead-form" id="leadForm">
+      <input type="text" class="form-input" placeholder="اسمك الكريم" id="leadName" required>
+      <input type="tel" class="form-input" placeholder="رقم هاتفك" id="leadPhone" required>
+      <select class="form-select" id="leadInterest">
+        <option value="">اختار الباقة اللي تهمك</option>
+        <option value="basic">Basic – 299 ج/شهر</option>
+        <option value="pro">Pro – 499 ج/شهر</option>
+        <option value="vip">VIP – 799 ج/شهر</option>
+      </select>
+      <button type="submit" class="form-submit">احجز تجربتي المجانية ←</button>
+      <div class="form-note">✓ بدون أي التزام · فريق المبيعات هيتواصل معاك قريباً</div>
+    </form>
+    <div class="success-msg" id="successMsg">
+      ✅ تم استلام طلبك بنجاح! فريقنا هيتواصل معاك قريباً على واتساب.
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">GYM<span>OS</span></div>
+  <div class="footer-links">
+    <a href="#features">المميزات</a>
+    <a href="#pricing">الأسعار</a>
+    <a href="#about">عننا</a>
+    <a href="#contact">تواصل</a>
+  </div>
+  <div class="footer-copy">© 2025 GYMOS. جميع الحقوق محفوظة.</div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/201000000000" class="wa-float" target="_blank" id="waBtn">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.12 1.532 5.847L.054 23.25a.75.75 0 00.916.916l5.403-1.478A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-1.99 0-3.852-.574-5.428-1.566l-.388-.244-4.025 1.1 1.1-4.025-.244-.388A9.75 9.75 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25c5.385 0 9.75 4.365 9.75 9.75 0 5.385-4.365 9.75-9.75 9.75z"/>
+  </svg>
+  <div class="wa-tooltip">تواصل على واتساب</div>
+</a>
+
+<script>
+  // Lead form submission
+  document.getElementById('leadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('leadName').value.trim();
+    const phone = document.getElementById('leadPhone').value.trim();
+    const interest = document.getElementById('leadInterest').value;
+    if (!name || !phone) return;
+
+    // In production: save to Firestore here
+    const lead = {
+      name, phone, interest: interest || 'unknown',
+      source: 'website',
+      status: 'new',
+      created_at: new Date().toISOString()
+    };
+    console.log('New lead:', lead);
+
+    // Show success
+    document.getElementById('leadForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+
+    // Track event (analytics placeholder)
+    trackEvent('form_submit', 'lead_form', interest);
+  });
+
+  // WhatsApp click tracking
+  document.getElementById('waBtn').addEventListener('click', function() {
+    trackEvent('whatsapp_click', 'floating_button', window.location.hash || 'home');
+  });
+
+  // Analytics tracking placeholder
+  function trackEvent(type, element, context) {
+    const event = {
+      type, element, context,
+      page: window.location.pathname,
+      timestamp: new Date().toISOString()
+    };
+    console.log('Track event:', event);
+    // In production: save to Firestore analytics collection
+  }
+
+  // Track pricing CTA clicks
+  document.querySelectorAll('.plan-cta').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const plan = this.closest('.pricing-card').querySelector('.plan-name').textContent;
+      trackEvent('pricing_cta_click', 'pricing_card', plan);
+    });
+  });
+
+  // Smooth nav active state
+  const sections = document.querySelectorAll('section[id], .lead-form-section');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
